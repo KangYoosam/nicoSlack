@@ -1,12 +1,12 @@
 {
-  "name": "nicoSlack",
+  "name": "nico-zoom",
   "version": "0.0.1",
   "description": "niconicofu slack",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
-  "repository": "https://github.com/cyamax/nicoSlack",
+  "repository": "https://github.com/kangyoosam/nico-zoom",
   "keywords": [
     "Electron",
     "slack"
@@ -17,11 +17,9 @@
     "electron": "^2.0.0"
   },
   "dependencies": {
-    "@slack/client": "^4.3.1",
     "nicojs": "^1.1.8",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
-    "http": "0.0.0",
-    "socket.io": "^2.2.0"
+    "http": "0.0.0"
   }
 }

@@ -7,7 +7,6 @@ const { app, BrowserWindow } = electron
 const express = require('express')
 const appExpress = express()
 const http = require('http').Server(appExpress)
-const io = require('socket.io')(http)
 const PORT = process.env.PORT || 3000
 const bodyParser = require('body-parser')
 
@@ -15,18 +14,11 @@ appExpress.use(bodyParser.json())
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let invisibleWindow, mainWindow
+let invisibleWindow
 
 function createWindow() {
-  // Create the browser window.
-
   // 画面サイズを取得
   const { width, height } = electron.screen.getPrimaryDisplay().size
-
-  mainWindow = new BrowserWindow({
-    width: 320,
-    height: 240,
-  })
 
   invisibleWindow = new BrowserWindow({
     width,
@@ -41,11 +33,7 @@ function createWindow() {
   invisibleWindow.setIgnoreMouseEvents(true)
 
   // and load the index.html of the app.
-  mainWindow.loadFile('index.html')
   invisibleWindow.loadFile('invisible.html')
-
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   invisibleWindow.on('closed', function () {
@@ -53,15 +41,6 @@ function createWindow() {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     invisibleWindow = null
-    mainWindow = null
-  })
-
-  mainWindow.on('closed', function () {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    invisibleWindow = null
-    mainWindow = null
   })
 }
 
@@ -87,14 +66,9 @@ app.on('activate', function () {
   }
 })
 
-// 透明画面にメッセージを送る
-function sendToRendererContent(slackText) {
-  // レンダラー側のonが実行される前に送るとエラーで落ちるので注意
-  invisibleWindow.webContents.send('slackContent', slackText)
-}
+appExpress.post('/message', function (req, res) {
+  invisibleWindow.webContents.send('message', req.body.text)
 
-appExpress.post('/slack', function (req, res) {
-  sendToRendererContent(req.body.text)
   res.status(200).json(req.body.text)
 })
 
