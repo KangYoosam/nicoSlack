@@ -6,8 +6,8 @@ var nico = new NicoJS({
   app: document.getElementById('app'),
   width: 1500,
   height: 400,
-  font_size: 50,     // opt
-  color: '#fff'  // opt
+  font_size: 50,
+  color: '#fff'
 })
 
 // コメント待機
