@@ -18,6 +18,10 @@
   },
   "dependencies": {
     "@slack/client": "^4.3.1",
-    "nicojs": "^1.1.8"
+    "nicojs": "^1.1.8",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "http": "0.0.0",
+    "socket.io": "^2.2.0"
   }
 }

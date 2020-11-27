@@ -1,22 +1,32 @@
 "use strict"
 
-const electron = require('electron');
-const { app, BrowserWindow, ipcMain } = electron;
+const electron = require('electron')
+const { app, BrowserWindow } = electron
+
+// server below
+const express = require('express')
+const appExpress = express()
+const http = require('http').Server(appExpress)
+const io = require('socket.io')(http)
+const PORT = process.env.PORT || 3000
+const bodyParser = require('body-parser')
+
+appExpress.use(bodyParser.json())
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let invisibleWindow, mainWindow;
+let invisibleWindow, mainWindow
 
 function createWindow() {
   // Create the browser window.
 
   // 画面サイズを取得
-  const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize;
-  
+  const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
+
   mainWindow = new BrowserWindow({
     width: 320,
     height: 240,
-  });
+  })
 
   invisibleWindow = new BrowserWindow({
     width,
@@ -24,15 +34,15 @@ function createWindow() {
     frame: false, //　ウィンドウフレーム非表示
     transparent: true,  //背景を透明に
     alwaysOnTop: true,  //常に最前面
-  });
+  })
 
 
   // 透明な部分のマウスのクリックを検知させない
-  invisibleWindow.setIgnoreMouseEvents(true);
+  invisibleWindow.setIgnoreMouseEvents(true)
 
   // and load the index.html of the app.
-  mainWindow.loadFile('index.html');
-  invisibleWindow.loadFile('invisible.html');
+  mainWindow.loadFile('index.html')
+  invisibleWindow.loadFile('invisible.html')
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
@@ -42,16 +52,16 @@ function createWindow() {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
-    invisibleWindow = null;
-    mainWindow = null;
-  });
+    invisibleWindow = null
+    mainWindow = null
+  })
 
   mainWindow.on('closed', function () {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
-    invisibleWindow = null;
-    mainWindow = null;
+    invisibleWindow = null
+    mainWindow = null
   })
 }
 
@@ -87,31 +97,41 @@ function sendToRendererContent(slackText) {
   // mainWindow.webContents.on('did-finish-load', () => {
   // レンダラー側のonが実行される前に送るとエラーで落ちるので注意
   invisibleWindow.webContents.send('slackContent', slackText)
-  // });
-}; 
+  // })
+}
 
 
 
 //// Slack Outgoing Web Hook
-const { RTMClient } = require('@slack/client');
-const token = require('./account.json').token;
+const { RTMClient } = require('@slack/client')
+const token = require('./account.json').token
 
-const rtm = new RTMClient(token, { logLevel: 'debug' });
+const rtm = new RTMClient(token, { logLevel: 'debug' })
 
-rtm.start();
+rtm.start()
 
-rtm.on('message', (event) => {
-  // For structure of `event`, see https://api.slack.com/events/message
+io.on('connection', function (socket) {
+  socket.on('message', function (msg) {
+      io.emit('message', msg)
+  })
+})
 
-  let message = event;
-  // Skip messages that are from a bot or my own user ID
-  // if ((message.subtype && message.subtype === 'bot_message') ||
-  //     (!message.subtype && message.user === rtm.activeUserId)) {
-  //     return;
-  // }
+appExpress.post('/slack', function (req, res) {
+  sendToRendererContent(req.body.text)
 
-  // Log the message
-  console.log(`(channel:${message.channel}) ${message.user} says: ${message.text}`);
-  sendToRendererContent(`${message.text}`);
-});
+  const { type, event } = req.body
 
+  if (type === 'challenge') {
+      // 認証用リクエストなので、特に何もしない
+  } else if (type === 'event_callback') {
+      console.log(event.text)
+      io.emit('message', event.text)
+  }
+
+  res.status(200).json(req.body)
+
+})
+
+http.listen(PORT, function () {
+  console.log('server listening. Port:' + PORT)
+})

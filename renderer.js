@@ -17,7 +17,7 @@ var nico = new NicoJS({
 nico.listen();
 
 // コメント送信
-// nico.loop(['Hello World.']);
+nico.loop(['Hello World.']);
 
 ipcRenderer.on('slackContent', (event, arg) => {
     console.log(arg) // "pong"を表示
