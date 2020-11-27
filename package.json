@@ -1,7 +1,7 @@
 {
   "name": "nico-zoom",
   "version": "0.0.1",
-  "description": "niconicofu slack",
+  "description": "Zoom等のビデオ会議・オンラインセミナーツールでニコニコ風にコメントを表示するツール",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
@@ -9,9 +9,12 @@
   "repository": "https://github.com/kangyoosam/nico-zoom",
   "keywords": [
     "Electron",
-    "slack"
+    "Zoom",
+    "Niconico",
+    "ニコニコ",
+    "comment"
   ],
-  "author": "cyamax",
+  "author": "kangyoosam",
   "license": "MIT Lisence",
   "devDependencies": {
     "electron": "^2.0.0"
