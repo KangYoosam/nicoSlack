@@ -2,8 +2,6 @@
 NicoJS = require('nicoJS');
 const { ipcRenderer } = require('electron');
 
-
-
 var nico = new NicoJS({
     app: document.getElementById('app'),
     width: 1500,

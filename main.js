@@ -21,7 +21,7 @@ function createWindow() {
   // Create the browser window.
 
   // 画面サイズを取得
-  const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
+  const { width, height } = electron.screen.getPrimaryDisplay().size
 
   mainWindow = new BrowserWindow({
     width: 320,
@@ -87,49 +87,15 @@ app.on('activate', function () {
   }
 })
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
-
-
-
 // 透明画面にメッセージを送る
 function sendToRendererContent(slackText) {
-  // mainWindow.webContents.on('did-finish-load', () => {
   // レンダラー側のonが実行される前に送るとエラーで落ちるので注意
   invisibleWindow.webContents.send('slackContent', slackText)
-  // })
 }
-
-
-
-//// Slack Outgoing Web Hook
-const { RTMClient } = require('@slack/client')
-const token = require('./account.json').token
-
-const rtm = new RTMClient(token, { logLevel: 'debug' })
-
-rtm.start()
-
-io.on('connection', function (socket) {
-  socket.on('message', function (msg) {
-      io.emit('message', msg)
-  })
-})
 
 appExpress.post('/slack', function (req, res) {
   sendToRendererContent(req.body.text)
-
-  const { type, event } = req.body
-
-  if (type === 'challenge') {
-      // 認証用リクエストなので、特に何もしない
-  } else if (type === 'event_callback') {
-      console.log(event.text)
-      io.emit('message', event.text)
-  }
-
-  res.status(200).json(req.body)
-
+  res.status(200).json(req.body.text)
 })
 
 http.listen(PORT, function () {
