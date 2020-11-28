@@ -35,7 +35,6 @@ function createWindow() {
     alwaysOnTop: true,  //常に最前面
   })
 
-
   // 透明な部分のマウスのクリックを検知させない
   invisibleWindow.setIgnoreMouseEvents(true)
   invisibleWindow.maximize();
@@ -90,7 +89,7 @@ app.on('activate', function () {
 let last_id
 
 const fetchComment = () => {
-  axios.get('http://localhost:8000/api/v1/event_chat', {
+  axios.get('https://pwjaqd.oned.jp/api/v1/event_chat', {
     params: {
       last_id,
     },
