@@ -9,8 +9,10 @@ const appExpress = express()
 const http = require('http').Server(appExpress)
 const PORT = process.env.PORT || 3000
 const bodyParser = require('body-parser')
+const cors = require('cors')
 
 appExpress.use(bodyParser.json())
+appExpress.use(cors())
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
