@@ -1,5 +1,5 @@
 {
-  "name": "nico-zoom",
+  "name": "zoom-nico",
   "version": "0.0.1",
   "description": "Zoom等のビデオ会議・オンラインセミナーツールでニコニコ風にコメントを表示するツール",
   "main": "main.js",
