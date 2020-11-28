@@ -17,6 +17,8 @@ appExpress.use(cors())
 const axios = require('axios')
 const { create } = require('domain')
 
+const path = require('path')
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let invisibleWindow
@@ -41,7 +43,8 @@ function createWindow() {
 
   // and load the index.html of the app.
   // invisibleWindow.loadFile('invisible.html')
-  invisibleWindow.loadURL('file://' + __dirname + '/invisible.html')
+  // invisibleWindow.loadURL('file://' + __dirname + '/index.html')
+  invisibleWindow.loadURL('file://' + path.join(__dirname, 'index.html'))
 
   // Emitted when the window is closed.
   invisibleWindow.on('closed', function () {

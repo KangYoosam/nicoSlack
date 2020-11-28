@@ -16,10 +16,6 @@ nico.listen()
 // コメント送信
 // nico.loop(['Hello World.'])
 
-setInterval(() => {
-  document.getElementById('hoge').innerHTML = Math.random()
-}, 1000);
-
 ipcRenderer.on('message', (event, text) => {
   nico.send(text)
 })
