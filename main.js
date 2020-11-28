@@ -23,6 +23,8 @@ function createWindow() {
   const { width, height } = electron.screen.getPrimaryDisplay().size
 
   invisibleWindow = new BrowserWindow({
+    left: 0,
+    top: 0,
     width,
     height,
     frame: false, //　ウィンドウフレーム非表示
@@ -33,6 +35,7 @@ function createWindow() {
 
   // 透明な部分のマウスのクリックを検知させない
   invisibleWindow.setIgnoreMouseEvents(true)
+  invisibleWindow.maximize();
 
   // and load the index.html of the app.
   invisibleWindow.loadFile('invisible.html')
