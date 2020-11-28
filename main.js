@@ -14,6 +14,9 @@ const cors = require('cors')
 appExpress.use(bodyParser.json())
 appExpress.use(cors())
 
+const axios = require('axios')
+const { create } = require('domain')
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let invisibleWindow
@@ -53,7 +56,13 @@ function createWindow() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', () => {
+  createWindow()
+
+  setInterval(() => {
+    fetchComment()
+  }, 1000)
+})
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
@@ -72,12 +81,24 @@ app.on('activate', function () {
   }
 })
 
-appExpress.post('/message', function (req, res) {
-  invisibleWindow.webContents.send('message', req.body.text)
+// appExpress.post('/message', function (req, res) {
+//   invisibleWindow.webContents.send('message', req.body.text)
 
-  res.status(200).json(req.body.text)
-})
+//   res.status(200).json(req.body.text)
+// })
 
-http.listen(PORT, function () {
-  console.log('server listening. Port:' + PORT)
-})
+const fetchComment = () => {
+  axios.get('http://localhost:8000/api/v1/event_chat', {
+    params: {
+      last_id: 1,
+    },
+  })
+    .then(response => {
+      console.log(response.data)
+      invisibleWindow.webContents.send('message', response.data)
+    })
+}
+
+// http.listen(PORT, function () {
+//   console.log('server listening. Port:' + PORT)
+// })
