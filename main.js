@@ -38,7 +38,8 @@ function createWindow() {
   invisibleWindow.maximize();
 
   // and load the index.html of the app.
-  invisibleWindow.loadFile('invisible.html')
+  // invisibleWindow.loadFile('invisible.html')
+  invisibleWindow.loadURL('file://' + __dirname + '/invisible.html')
 
   // Emitted when the window is closed.
   invisibleWindow.on('closed', function () {
