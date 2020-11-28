@@ -3,20 +3,6 @@
 const electron = require('electron')
 const { app, BrowserWindow } = electron
 
-// server below
-const express = require('express')
-const appExpress = express()
-const http = require('http').Server(appExpress)
-const PORT = process.env.PORT || 3000
-const bodyParser = require('body-parser')
-const cors = require('cors')
-
-appExpress.use(bodyParser.json())
-appExpress.use(cors())
-
-const axios = require('axios')
-const { create } = require('domain')
-
 const path = require('path')
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -60,10 +46,6 @@ function createWindow() {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   createWindow()
-
-  setInterval(() => {
-    fetchComment()
-  }, 1000)
 })
 
 // Quit when all windows are closed.
@@ -82,30 +64,3 @@ app.on('activate', function () {
     createWindow()
   }
 })
-
-// appExpress.post('/message', function (req, res) {
-//   invisibleWindow.webContents.send('message', req.body.text)
-
-//   res.status(200).json(req.body.text)
-// })
-
-let last_id
-
-const fetchComment = () => {
-  axios.get('https://pwjaqd.oned.jp/api/v1/event_chat', {
-    params: {
-      last_id,
-    },
-  })
-    .then(response => {
-      if (!response.data) {
-        return
-      }
-      last_id = response.data.id
-      invisibleWindow.webContents.send('message', response.data.text)
-    })
-}
-
-// http.listen(PORT, function () {
-//   console.log('server listening. Port:' + PORT)
-// })
