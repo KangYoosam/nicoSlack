@@ -87,15 +87,20 @@ app.on('activate', function () {
 //   res.status(200).json(req.body.text)
 // })
 
+let last_id
+
 const fetchComment = () => {
   axios.get('http://localhost:8000/api/v1/event_chat', {
     params: {
-      last_id: 1,
+      last_id,
     },
   })
     .then(response => {
-      console.log(response.data)
-      invisibleWindow.webContents.send('message', response.data)
+      if (!response.data) {
+        return
+      }
+      last_id = response.data.id
+      invisibleWindow.webContents.send('message', response.data.text)
     })
 }
 
